@@ -27,7 +27,7 @@ function lfTOSLink($sk, &$tpl)
     global $wgArticle;
 
     $user = Linker::userLink($wgArticle->getUser(), $wgArticle->getUserText());
-    $tpl->set('lastmod', $tpl->data['lastmod'] . " Последний изменявший пользователь: $user.");
+    $tpl->set('lastmod', $tpl->data['lastmod'] . "; <b>автор изменения</b> — $user.");
 
     return true;
 }
