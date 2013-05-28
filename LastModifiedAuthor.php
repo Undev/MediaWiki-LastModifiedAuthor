@@ -1,12 +1,10 @@
 <?php
-
-if (!defined('MEDIAWIKI')) {
-    echo <<<EOT
-To install this extension, put the following line in LocalSettings.php:
-require_once( "\$IP/extensions/LastModified/LastModified.php" );
-EOT;
-    exit(1);
-}
+/**
+ * Author: Denisov Denis
+ * Email: denisovdenis@me.com
+ * Date: 28.05.13
+ * Time: 15:06
+ */
 
 // Extension credits that will show up on Special:Version
 $wgExtensionCredits['other'][] = array(
