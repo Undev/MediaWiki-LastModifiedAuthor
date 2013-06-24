@@ -6,28 +6,46 @@
  * Time: 15:06
  */
 
-// Extension credits that will show up on Special:Version
+
+$wgExtensionFunctions[] = 'wfSetupLastModifiedAuthor';
 $wgExtensionCredits['other'][] = array(
     'path' => __FILE__,
     'name' => 'LastModifiedAuthor',
-    'version' => '1.0',
     'author' => '[http://www.facebook.com/denisovdenis Denisov Denis]',
     'url' => 'https://github.com/Undev/wiki-last-modified-author',
     'description' => 'Displays the author of the last change at the end of the article',
-    'version' => 0.1,
+    'version' => 0.3,
 );
 
-$wgHooks['SkinTemplateOutputPageBeforeExec'][] = 'lfTOSLink';
-
-function lfTOSLink($sk, &$tpl)
+class LastModifiedAuthor
 {
-    if (empty($tpl->data['lastmod']))
-        return false;
+    function __construct()
+    {
+        global $wgHooks;
 
-    global $wgArticle;
+        $wgHooks['SkinTemplateOutputPageBeforeExec'][] = $this;
 
-    $user = Linker::userLink($wgArticle->getUser(), $wgArticle->getUserText());
-    $tpl->set('lastmod', $tpl->data['lastmod'] . "; <b>автор изменения</b> — $user.");
+    }
 
-    return true;
+    public function onSkinTemplateOutputPageBeforeExec($sk, &$tpl)
+    {
+        $title = RequestContext::getMain()->getOutput()->getTitle();
+        $context =RequestContext::getMain()->getOutput()->getContext();
+        $article = Article::newFromTitle($title, $context);
+
+        $user = $article->getPage()->getUser();
+        $userText = $article->getPage()->getUserText();
+        $userLink = Linker::userLink($user, $userText);
+
+        $tpl->set('lastmod', $tpl->data['lastmod'] . "; <b>автор изменения</b> — $userLink.");
+
+        return true;
+    }
+}
+
+function wfSetupLastModifiedAuthor()
+{
+    global $wgLastModifiedAuthor;
+
+    $wgLastModifiedAuthor = new LastModifiedAuthor;
 }
