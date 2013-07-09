@@ -29,16 +29,23 @@ class LastModifiedAuthor
 
     public function onSkinTemplateOutputPageBeforeExec($sk, &$tpl)
     {
-        $title = RequestContext::getMain()->getOutput()->getTitle();
-        $context =RequestContext::getMain()->getOutput()->getContext();
-        $article = Article::newFromTitle($title, $context);
+        try {
+            $revision = RequestContext::getMain()->getWikiPage()->getRevision();
+            if ($revision) {
+                $title = RequestContext::getMain()->getOutput()->getTitle();
+                $context = RequestContext::getMain()->getOutput()->getContext();
+                $article = Article::newFromTitle($title, $context);
 
-        $user = $article->getPage()->getUser();
-        $userText = $article->getPage()->getUserText();
-        $userLink = Linker::userLink($user, $userText);
+                $user = $article->getPage()->getUser();
+                $userText = $article->getPage()->getUserText();
+                $userLink = Linker::userLink($user, $userText);
 
-        $tpl->set('lastmod', $tpl->data['lastmod'] . "; <b>автор изменения</b> — $userLink.");
+                $tpl->set('lastmod', $tpl->data['lastmod'] . "; <b>автор изменения</b> — $userLink.");
 
+            }
+        } catch (Exception $e) {
+
+        }
         return true;
     }
 }
