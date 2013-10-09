@@ -29,7 +29,7 @@ class LastModifiedAuthor
 
 	function onSkinTemplateOutputPageBeforeExec($sk, VectorTemplate &$tpl)
 	{
-		if (!RequestContext::getMain()->getOutput()->isArticle()) {
+		if (RequestContext::getMain()->getOutput()->isArticle()) {
 			$data = $tpl->data['credits'];
 			if (!empty($data)) {
 				$data .= '<br>';
