@@ -9,50 +9,52 @@
 
 $wgExtensionFunctions[] = 'wfSetupLastModifiedAuthor';
 $wgExtensionCredits['other'][] = array(
-    'path' => __FILE__,
-    'name' => 'LastModifiedAuthor',
-    'author' => '[http://www.facebook.com/denisovdenis Denisov Denis]',
-    'url' => 'https://github.com/Undev/wiki-last-modified-author',
-    'description' => 'Displays the author of the last change at the end of the article',
-    'version' => 0.3,
+	'path' => __FILE__,
+	'name' => 'LastModifiedAuthor',
+	'author' => '[http://www.facebook.com/denisovdenis Denisov Denis]',
+	'url' => 'https://github.com/Undev/wiki-last-modified-author',
+	'description' => 'Displays the author of the last change at the end of the article',
+	'version' => 0.3,
 );
 
 class LastModifiedAuthor
 {
-    function __construct()
-    {
-        global $wgHooks;
+	function __construct()
+	{
+		global $wgHooks;
 
-        $wgHooks['SkinTemplateOutputPageBeforeExec'][] = $this;
+		$wgHooks['SkinTemplateOutputPageBeforeExec'][] = $this;
 
-    }
+	}
 
-    public function onSkinTemplateOutputPageBeforeExec($sk, &$tpl)
-    {
-        try {
-            $revision = RequestContext::getMain()->getWikiPage()->getRevision();
-            if ($revision) {
-                $title = RequestContext::getMain()->getOutput()->getTitle();
-                $context = RequestContext::getMain()->getOutput()->getContext();
-                $article = Article::newFromTitle($title, $context);
+	function onSkinTemplateOutputPageBeforeExec($sk, VectorTemplate &$tpl)
+	{
+		if (!RequestContext::getMain()->getOutput()->isArticle()) {
+			$data = $tpl->data['credits'];
+			if (!empty($data)) {
+				$data .= '<br>';
+			}
 
-                $user = $article->getPage()->getUser();
-                $userText = $article->getPage()->getUserText();
-                $userLink = Linker::userLink($user, $userText);
+			$article = Article::newFromTitle(
+				RequestContext::getMain()->getOutput()->getTitle(),
+				RequestContext::getMain()->getOutput()->getContext());
 
-                $tpl->set('lastmod', $tpl->data['lastmod'] . "; <b>автор изменения</b> — $userLink.");
+			$user = $article->getPage()->getUser();
+			$userText = $article->getPage()->getUserText();
+			$userLink = Linker::userLink($user, $userText);
 
-            }
-        } catch (Exception $e) {
+			$data .= '<p>Автор изменения &dash; ' . $userLink . '.</p>';
 
-        }
-        return true;
-    }
+			$tpl->set('credits', $data);
+		}
+
+		return true;
+	}
 }
 
 function wfSetupLastModifiedAuthor()
 {
-    global $wgLastModifiedAuthor;
+	global $wgLastModifiedAuthor;
 
-    $wgLastModifiedAuthor = new LastModifiedAuthor;
+	$wgLastModifiedAuthor = new LastModifiedAuthor;
 }
