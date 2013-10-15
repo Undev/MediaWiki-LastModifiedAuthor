@@ -27,7 +27,7 @@ class LastModifiedAuthor
 
 	}
 
-	function onSkinTemplateOutputPageBeforeExec($sk, VectorTemplate &$tpl)
+	function onSkinTemplateOutputPageBeforeExec($sk, &$tpl)
 	{
 		if (RequestContext::getMain()->getOutput()->isArticle()) {
 			$data = $tpl->data['credits'];
