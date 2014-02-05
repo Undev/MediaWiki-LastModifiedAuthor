@@ -1,12 +1,4 @@
 <?php
-/**
- * Author: Denisov Denis
- * Email: denisovdenis@me.com
- * Date: 28.05.13
- * Time: 15:06
- */
-
-
 $wgExtensionFunctions[] = 'wfSetupLastModifiedAuthor';
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
